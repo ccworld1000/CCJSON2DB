@@ -1,21 +1,29 @@
 # -*- coding:utf-8 -*-
 #!/usr/bin/python
 #
+#  CCJson2db.py
+#
 #  Created by CC on 2017/09/07.
 #  Copyright © 2017 - now  CC | ccworld1000@gmail.com . All rights reserved.
 #  https://github.com/ccworld1000/CCJSON2DB
 
-# Licensed under the BSD 3-Clause License (the "License"); you may not use
-# this file except in compliance with the License. You may obtain a copy of
-# the License at
-#
-#       https://opensource.org/licenses/BSD-3-Clause
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+#  
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#  
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#  
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#  
+#  
 
 import re
 import json
@@ -25,17 +33,25 @@ def json2db (jFile, dbFile, createSQL, dropSQL, insertSQL) :
     dicset = json.load(open(jFile))
     conn = sqlite3.connect (dbFile)
 
-    print conn;
-
     c = conn.cursor()
+    c.execute ("SELECT tbl_name  FROM sqlite_master where type = 'table' and tbl_name = 'CCSQLite.Database2'")
+    table = c.fetchone()
+
+    if (table) :
+    	if table[0] == 'CCSQLite.Database2' :
+		print ("execute json2db")
+	else :
+		print ("ill CCSQLite")
+		return 	-1
+    else :
+	print ("NO Table, Please check database is right!");
+	return 	-1
 
     c.execute(dropSQL)
     c.execute(createSQL)
 
     print "create data table success"
     conn.commit()
-
-    #print dicset
 
     index = 0;
     usMarkType = "222222";
