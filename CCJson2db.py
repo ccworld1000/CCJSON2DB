@@ -57,6 +57,7 @@ def json2db (jFile, dbFile, createSQL, dropSQL, insertSQL) :
     usMarkType = "222222";
     hkMarkType = "111111";
     markType = ""
+    pureCode = "" 
     for dic in dicset :
             code = dic["code"]
             cnName = dic["cnName"]
@@ -72,8 +73,9 @@ def json2db (jFile, dbFile, createSQL, dropSQL, insertSQL) :
             
             if (ret_match1) :
                 markType = hkMarkType
-                prueCode = re.sub (r'(.hk)', '', dataType, flags = re.I)
-                print "[CC HK] prueCode : " + pureCode 
+		tmp = code
+                pureCode = re.sub (r'.hk', '', pureCode, flags = re.I)
+                print "[CC HK] pureCode : " + pureCode 
             elif (ret_match2) :
                 markType = usMarkType
                 pureCode = code;
