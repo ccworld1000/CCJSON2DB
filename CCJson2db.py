@@ -29,6 +29,7 @@ import re
 import json
 import sqlite3
 
+
 def json2db (jFile, dbFile, createSQL, dropSQL, insertSQL) :
     dicset = json.load(open(jFile))
     conn = sqlite3.connect (dbFile)
@@ -38,14 +39,14 @@ def json2db (jFile, dbFile, createSQL, dropSQL, insertSQL) :
     table = c.fetchone()
 
     if (table) :
-    	if table[0] == 'CCSQLite.Database2' :
-		print ("execute json2db")
-	else :
-		print ("ill CCSQLite")
-		return 	-1
-    else :
-	print ("NO Table, Please check database is right!");
-	return 	-1
+        if table[0] == 'CCSQLite.Database2' :
+            print ("execute json2db")
+        else :
+            print ("ill CCSQLite")
+            return 	-1
+    else:
+        print ("NO Table, Please check database is right!")
+        return -1
 
     c.execute(dropSQL)
     c.execute(createSQL)
@@ -53,11 +54,11 @@ def json2db (jFile, dbFile, createSQL, dropSQL, insertSQL) :
     print "create data table success"
     conn.commit()
 
-    index = 0;
-    usMarkType = "222222";
-    hkMarkType = "111111";
+    index = 0
+    usMarkType = "222222"
+    hkMarkType = "111111"
     markType = ""
-    pureCode = "" 
+
     for dic in dicset :
             code = dic["code"]
             cnName = dic["cnName"]
@@ -66,21 +67,20 @@ def json2db (jFile, dbFile, createSQL, dropSQL, insertSQL) :
             cnSpell = dic["cnSpell"]
             cnSpellAbbr = dic["cnSpellAbbr"]
             ftName = dic["ftName"]
-            pureCode = code;
-            
+            pureCode = code
+
             ret_match1 = re.match("1", dataType)
             ret_match2 = re.match("2", dataType)
-            
+
             if (ret_match1) :
                 markType = hkMarkType
-		tmp = code
                 pureCode = re.sub (r'.hk', '', pureCode, flags = re.I)
-                print "[CC HK] pureCode : " + pureCode 
+                print "[CC HK] pureCode : " + pureCode
             elif (ret_match2) :
                 markType = usMarkType
-                pureCode = code;
+                pureCode = code
                 print "[CC US] pureCode : " + pureCode
-            
+
             data = [code, cnName, dataType, enName, cnSpell, cnSpellAbbr, ftName, pureCode, markType]
             c.execute (insertSQL, data)
 
